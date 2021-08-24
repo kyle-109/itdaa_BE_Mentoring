@@ -63,6 +63,10 @@ public class RoadAddrApiController {
              2-3. 만약 searchBldgNumber 가 입력되고, 그 값에 '-' 이 포함되면 '건물 본번 - 건물 부번' 인 형태입니다.
              */
             // searchBldgNumber null 이 아니면 건물번호가 입력된 것 입니다.
+            /*
+             * String.isEmpty() 는 null 값에 대해서는 동작하지 않습니다.
+             * by 1004-1
+             */
             if (!searchBldgNumber.isEmpty()) {
             	
                 // 건물번호가 본번 형태인지 부번 형태인지 '-' 을 기준으로 확인해야 합니다.
@@ -104,6 +108,11 @@ public class RoadAddrApiController {
             returnMap.put(resRoadAddr, null);  // return 주소정보는 조회 결과를 넣습니다.
             returnMap.put(resCnt, null); // return 건수정보는 조회 결과의 건수를 넣습니다.
 
+            /*
+             * 아래 throw new Exception() 은 강제로 Exception 을 만드는 코드입니다. 
+             * 사실 제가 테스트 하고 코드를 지우고 push 해드렸어야 했는데 그러지 못했더라구요 ㅠㅠ
+             * by 1004-1
+             */
             throw new Exception();
         }
         // 실행중 예외가 발생할 경우
