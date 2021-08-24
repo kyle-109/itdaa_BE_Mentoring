@@ -63,11 +63,7 @@ public class RoadAddrApiController {
              2-3. 만약 searchBldgNumber 가 입력되고, 그 값에 '-' 이 포함되면 '건물 본번 - 건물 부번' 인 형태입니다.
              */
             // searchBldgNumber null 이 아니면 건물번호가 입력된 것 입니다.
-            /*
-             * String.isEmpty() 는 null 값에 대해서는 동작하지 않습니다.
-             * by 1004-1
-             */
-            if (!searchBldgNumber.isEmpty()) {
+            if (searchBldgNumber!=null) {
             	
                 // 건물번호가 본번 형태인지 부번 형태인지 '-' 을 기준으로 확인해야 합니다.
             	
@@ -79,7 +75,7 @@ public class RoadAddrApiController {
 
                     // 도로명 검색어를 Like 로 하여 건물번호가 일치하는 도로명 주소를 찾습니다.
             		searchResultList = roadAddrRepository.findByRoadNameStartingWithAndBldgMainNo(searchRoadAddress, buildingMainNumber);
-
+            		
             	}
                 // 건물번호가 본번,부번 모두 입력된 형태라면 (예 : 흑석로 84-116)
             	else {
@@ -96,24 +92,25 @@ public class RoadAddrApiController {
 
                 // 도로명 검색어를 Like 로 하여 도로명 주소를 찾습니다.
                 searchResultList = roadAddrRepository.findByRoadNameStartingWith(searchRoadAddress);
-
+                
             }
-
+            searchResultListSize = searchResultList.size();
             // 도로명 주소가 검색된 결과가 없다면.
             if (searchResultListSize == 0) {
                 resultStatus = HttpStatus.NOT_FOUND; // HTTP Status 코드는 NOT_FOUND 로 합니다. (404)
+                returnMap.put(resMsg, "정상처리되었습니다.");    // return 메세지는 "정상" 으로 하고
+                returnMap.put(resRoadAddr, null);  // return 주소정보는 조회 결과를 넣습니다.
+                returnMap.put(resCnt, null); // return 건수정보는 조회 결과의 건수를 넣습니다.
+            }
+            
+            else {
+                returnMap.put(resMsg, "정상처리되었습니다.");    // return 메세지는 "정상" 으로 하고
+                returnMap.put(resRoadAddr, searchResultList);  // return 주소정보는 조회 결과를 넣습니다.
+                returnMap.put(resCnt, searchResultList.size());
             }
 
-            returnMap.put(resMsg, "정상처리되었습니다.");    // return 메세지는 "정상" 으로 하고
-            returnMap.put(resRoadAddr, null);  // return 주소정보는 조회 결과를 넣습니다.
-            returnMap.put(resCnt, null); // return 건수정보는 조회 결과의 건수를 넣습니다.
 
-            /*
-             * 아래 throw new Exception() 은 강제로 Exception 을 만드는 코드입니다. 
-             * 사실 제가 테스트 하고 코드를 지우고 push 해드렸어야 했는데 그러지 못했더라구요 ㅠㅠ
-             * by 1004-1
-             */
-            throw new Exception();
+
         }
         // 실행중 예외가 발생할 경우
         catch (Exception e) {
