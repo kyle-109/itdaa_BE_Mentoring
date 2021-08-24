@@ -63,27 +63,29 @@ public class RoadAddrApiController {
              2-3. 만약 searchBldgNumber 가 입력되고, 그 값에 '-' 이 포함되면 '건물 본번 - 건물 부번' 인 형태입니다.
              */
             // searchBldgNumber null 이 아니면 건물번호가 입력된 것 입니다.
-            if (true) {
-
+            if (!searchBldgNumber.isEmpty()) {
+            	
                 // 건물번호가 본번 형태인지 부번 형태인지 '-' 을 기준으로 확인해야 합니다.
-
+            	
 
                 // 건물번호가 본번만 입력된 형태라면 (예 : 흑석로 84)
-
+            	if(!searchBldgNumber.contains("-")) {
                     // 건물번호가 문자로 되어 있으므로 숫자로 바꿔야 합니다. (DB는 숫자컬럼으로 되어 있음)
-
+            		buildingMainNumber=Integer.parseInt(searchBldgNumber);
 
                     // 도로명 검색어를 Like 로 하여 건물번호가 일치하는 도로명 주소를 찾습니다.
+            		searchResultList = roadAddrRepository.findByRoadNameStartingWithAndBldgMainNo(searchRoadAddress, buildingMainNumber);
 
-
-
+            	}
                 // 건물번호가 본번,부번 모두 입력된 형태라면 (예 : 흑석로 84-116)
-
+            	else {
 
                     // 건물번호(본번/부번)이 문자로 되어 있으므로 숫자로 바꿔야 합니다. (DB는 숫자컬럼으로 되어 있음)
-
+            		buildingMainNumber=Integer.parseInt(searchBldgNumber.split("-")[0]);
+            		buildingSubNumber=Integer.parseInt(searchBldgNumber.split("-")[1]);
                     // 도로명 검색어를 = 로 하여 건물본번, 건물부번 모두가 일치하는 도로명 주소를 찾습니다.
-
+            		searchResultList = roadAddrRepository.findByRoadNameAndBldgMainNoAndBldgSubNo(searchRoadAddress, buildingMainNumber, buildingSubNumber);
+            	}
             }
             // searchBldgNumber null 이면 도로명 검색어만 입력된 것입니다.
             else {
@@ -107,8 +109,8 @@ public class RoadAddrApiController {
         // 실행중 예외가 발생할 경우
         catch (Exception e) {
 
-            log.error(e.getMessage()); // 오류 내용을 로그로 남깁니다.
-
+            //log.error(e.getMessage()); // 오류 내용을 로그로 남깁니다.
+        	e.printStackTrace();
             resultStatus = HttpStatus.SERVICE_UNAVAILABLE;    // HTTP Status 코드는 SERVICE_UNAVAILABLE 로 합니다. (503)
             returnMap.put(resMsg, "오류가 발생하였습니다.");      // return 메세지는 "오류발생" 으로 하고
             returnMap.put(resRoadAddr, "");                   // return 주소정보는 빈 값을 넣습니다.
