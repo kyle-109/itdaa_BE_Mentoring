@@ -99,8 +99,8 @@ public class RoadAddrApiController {
             if (searchResultListSize == 0) {
                 resultStatus = HttpStatus.NOT_FOUND; // HTTP Status 코드는 NOT_FOUND 로 합니다. (404)
                 returnMap.put(resMsg, "정상처리되었습니다.");    // return 메세지는 "정상" 으로 하고
-                returnMap.put(resRoadAddr, null);  // return 주소정보는 조회 결과를 넣습니다.
-                returnMap.put(resCnt, null); // return 건수정보는 조회 결과의 건수를 넣습니다.
+                returnMap.put(resRoadAddr, "검색된 결과가 없습니다");  // return 주소정보는 조회 결과를 넣습니다.
+                returnMap.put(resCnt, 0); // return 건수정보는 조회 결과의 건수를 넣습니다.
             }
             
             else {
